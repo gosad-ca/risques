@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grille d'identification des risques - SAD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #1e3a5f;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .quick-actions {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .form-content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #2c5282;
+            color: white;
+            padding: 18px 20px;
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.3;
+        }
+
+        .section-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .form-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #1f2937;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .form-label.label-risque {
+            color: #dc2626;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 10px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            border-color: #2c5282;
+            background: #2c5282;
+            color: white;
+        }
+
+        .radio-option input[type="radio"]:checked + label.option-oui {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        .radio-option input[type="radio"]:checked + label.option-non {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        .radio-option input[type="radio"]:checked + label.option-non-valide {
+            background: #f59e0b;
+            border-color: #f59e0b;
+        }
+
+        .radio-option label.option-oui {
+            background: #d1fae5;
+            border-color: #a7f3d0;
+        }
+
+        .radio-option label.option-non {
+            background: #fee2e2;
+            border-color: #fecaca;
+        }
+
+        .radio-option label.option-non-valide {
+            background: #fef3c7;
+            border-color: #fde68a;
+        }
+
+        .radio-option input[type="radio"]:focus + label {
+            outline: 3px solid #2c5282;
+            outline-offset: 2px;
+        }
+
+        .radio-option label:hover {
+            border-color: #2c5282;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #2c5282;
+        }
+
+        input[type="date"] {
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #2c5282;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-option label {
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            padding: 0;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 20px 30px;
+            background: #1e3a5f;
+            color: white;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+        }
+
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            opacity: 0.8;
+        }
+
+        .modal-body {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        #outputText {
+            width: 100%;
+            min-height: 400px;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            background: #f9fafb;
+        }
+
+        .icon {
+            font-size: 22px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+
+            .header h1 {
+                font-size: 26px;
+            }
+            
+            .header p {
+                font-size: 14px;
+            }
+            
+            .section-header {
+                font-size: 18px;
+                padding: 16px 18px;
+            }
+            
+            .form-label {
+                font-size: 15px;
+            }
+
+            .quick-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                font-size: 14px;
+            }
+
+            .radio-group {
+                flex-direction: column;
+            }
+
+            .radio-option {
+                min-width: 100%;
+            }
+        }
+
+        .success-message {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .success-message.show {
+            display: flex;
+        }
+
+        .generate-footer {
+            padding: 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .generate-footer .btn {
+            min-width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Grille d'identification des risques reliés au SAD</h1>
+            <p>CIUSSS de l'Estrie-CHUS - Soutien à domicile</p>
+            <p style="font-size: 12px; margin-top: 10px; opacity: 0.8;">
+                💡 Navigation clavier : Tab pour naviguer | Flèches ←→ pour choisir | Espace pour sélectionner et avancer
+            </p>
+        </div>
+
+        <div class="quick-actions">
+            <button class="btn btn-success" onclick="remplirAucunRisque()">
+                <span class="icon">✓</span> Aucun risque identifié
+            </button>
+        </div>
+
+        <div class="form-content">
+            <div class="success-message" id="successMessage">
+                <span class="icon">✓</span>
+                <span>Formulaire rempli automatiquement - Aucun risque identifié</span>
+            </div>
+
+            <form id="risquesForm">
+                <!-- ENVIRONNEMENT EXTÉRIEUR -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="icon">🏠</span>
+                        <span>ENVIRONNEMENT EXTÉRIEUR</span>
+                    </div>
+                    <div class="section-body">
+                        <div class="form-group">
+                            <label class="form-label">Numéro civique du domicile visible de la rue</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="num_civique" id="num_civique_oui" value="Oui" tabindex="0">
+                                    <label for="num_civique_oui" class="option-oui">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="num_civique" id="num_civique_non" value="Non" tabindex="0">
+                                    <label for="num_civique_non" class="option-non">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="num_civique" id="num_civique_nv" value="Non-validé" tabindex="0">
+                                    <label for="num_civique_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sous-section: Entrée et trottoir -->
+                        <div style="margin-left: 20px; padding-left: 20px; border-left: 3px solid #e5e7eb; margin-top: 20px; margin-bottom: 20px;">
+                            <h4 style="color: #2c5282; font-size: 18px; margin-bottom: 15px; font-weight: 700; line-height: 1.3;">Entrée et trottoir</h4>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Accessible</label>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" name="accessible" id="accessible_oui" value="Oui" tabindex="0">
+                                        <label for="accessible_oui" class="option-oui">Oui</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="accessible" id="accessible_non" value="Non" tabindex="0">
+                                        <label for="accessible_non" class="option-non">Non</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="accessible" id="accessible_nv" value="Non-validé" tabindex="0">
+                                        <label for="accessible_nv" class="option-non-valide">Non-validé</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label label-risque">Encombrée</label>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" name="encombree" id="encombree_non" value="Non" tabindex="0">
+                                        <label for="encombree_non" class="option-oui">Non</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="encombree" id="encombree_oui" value="Oui" tabindex="0">
+                                        <label for="encombree_oui" class="option-non">Oui</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="encombree" id="encombree_nv" value="Non-validé" tabindex="0">
+                                        <label for="encombree_nv" class="option-non-valide">Non-validé</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Éclairée</label>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" name="eclairee" id="eclairee_oui" value="Oui" tabindex="0">
+                                        <label for="eclairee_oui" class="option-oui">Oui</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="eclairee" id="eclairee_non" value="Non" tabindex="0">
+                                        <label for="eclairee_non" class="option-non">Non</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="eclairee" id="eclairee_nv" value="Non-validé" tabindex="0">
+                                        <label for="eclairee_nv" class="option-non-valide">Non-validé</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label label-risque">Enneigée / glacée</label>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" name="enneigee" id="enneigee_non" value="Non" tabindex="0">
+                                        <label for="enneigee_non" class="option-oui">Non</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="enneigee" id="enneigee_oui" value="Oui" tabindex="0">
+                                        <label for="enneigee_oui" class="option-non">Oui</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="enneigee" id="enneigee_nv" value="Non-validé" tabindex="0">
+                                        <label for="enneigee_nv" class="option-non-valide">Non-validé</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sous-section: Escalier et galerie -->
+                        <div style="margin-left: 20px; padding-left: 20px; border-left: 3px solid #e5e7eb; margin-top: 20px; margin-bottom: 20px;">
+                            <h4 style="color: #2c5282; font-size: 18px; margin-bottom: 15px; font-weight: 700; line-height: 1.3;">Escalier et galerie</h4>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Main courante présente ou stable</label>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" name="main_courante" id="main_courante_oui" value="Oui" tabindex="0">
+                                        <label for="main_courante_oui" class="option-oui">Oui</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="main_courante" id="main_courante_non" value="Non" tabindex="0">
+                                        <label for="main_courante_non" class="option-non">Non</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="main_courante" id="main_courante_nv" value="Non-validé" tabindex="0">
+                                        <label for="main_courante_nv" class="option-non-valide">Non-validé</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label label-risque">Surface encombrée (objet, neige)</label>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" name="surface_encombree" id="surface_encombree_non" value="Non" tabindex="0">
+                                        <label for="surface_encombree_non" class="option-oui">Non</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="surface_encombree" id="surface_encombree_oui" value="Oui" tabindex="0">
+                                        <label for="surface_encombree_oui" class="option-non">Oui</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="surface_encombree" id="surface_encombree_nv" value="Non-validé" tabindex="0">
+                                        <label for="surface_encombree_nv" class="option-non-valide">Non-validé</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Marche(s) stable(s) et égale(s)</label>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" name="marches_stables" id="marches_stables_oui" value="Oui" tabindex="0">
+                                        <label for="marches_stables_oui" class="option-oui">Oui</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="marches_stables" id="marches_stables_non" value="Non" tabindex="0">
+                                        <label for="marches_stables_non" class="option-non">Non</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="marches_stables" id="marches_stables_nv" value="Non-validé" tabindex="0">
+                                        <label for="marches_stables_nv" class="option-non-valide">Non-validé</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sous-section: Structure/surface du bâtiment -->
+                        <div style="margin-left: 20px; padding-left: 20px; border-left: 3px solid #e5e7eb; margin-top: 20px; margin-bottom: 20px;">
+                            <h4 style="color: #2c5282; font-size: 18px; margin-bottom: 15px; font-weight: 700; line-height: 1.3;">Structure/surface du bâtiment</h4>
+                            
+                            <div class="form-group">
+                                <label class="form-label label-risque">Anomalies visibles (ex : toiture qui s'effondre, murs fissurés, etc.)</label>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" name="anomalies_visibles" id="anomalies_visibles_non" value="Non" tabindex="0">
+                                        <label for="anomalies_visibles_non" class="option-oui">Non</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="anomalies_visibles" id="anomalies_visibles_oui" value="Oui" tabindex="0">
+                                        <label for="anomalies_visibles_oui" class="option-non">Oui</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="anomalies_visibles" id="anomalies_visibles_nv" value="Non-validé" tabindex="0">
+                                        <label for="anomalies_visibles_nv" class="option-non-valide">Non-validé</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Sonnette en fonction</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="sonnette" id="sonnette_oui" value="Oui" tabindex="0">
+                                    <label for="sonnette_oui" class="option-oui">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="sonnette" id="sonnette_non" value="Non" tabindex="0">
+                                    <label for="sonnette_non" class="option-non">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="sonnette" id="sonnette_nv" value="Non-validé" tabindex="0">
+                                    <label for="sonnette_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Commentaires</label>
+                            <textarea name="commentaires_ext" placeholder="Ajouter des commentaires si nécessaire..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ENVIRONNEMENT INTÉRIEUR -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="icon">🏡</span>
+                        <span>ENVIRONNEMENT INTÉRIEUR</span>
+                    </div>
+                    <div class="section-body">
+                        <div class="form-group">
+                            <label class="form-label label-risque">Encombrement dans les aires de circulation et devant source de chaleur</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="encombrement_int" id="encombrement_int_non" value="Non">
+                                    <label for="encombrement_int_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="encombrement_int" id="encombrement_int_oui" value="Oui">
+                                    <label for="encombrement_int_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="encombrement_int" id="encombrement_int_nv" value="Non-validé">
+                                    <label for="encombrement_int_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Équipements sanitaires disponibles ou fonctionnels (ex. toilette, lavabo, bain, etc.)</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="equipements_sanitaires" id="equipements_sanitaires_oui" value="Oui">
+                                    <label for="equipements_sanitaires_oui" class="option-oui">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="equipements_sanitaires" id="equipements_sanitaires_non" value="Non">
+                                    <label for="equipements_sanitaires_non" class="option-non">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="equipements_sanitaires" id="equipements_sanitaires_nv" value="Non-validé">
+                                    <label for="equipements_sanitaires_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Surface de plancher présentant des anomalies (ex: trous, inégalités, surface non fixe, carpette)</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="plancher_anomalies" id="plancher_anomalies_non" value="Non">
+                                    <label for="plancher_anomalies_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="plancher_anomalies" id="plancher_anomalies_oui" value="Oui">
+                                    <label for="plancher_anomalies_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="plancher_anomalies" id="plancher_anomalies_nv" value="Non-validé">
+                                    <label for="plancher_anomalies_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Présence de puces, punaises, vermine suspectée, excréments d'animaux</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="vermine" id="vermine_non" value="Non">
+                                    <label for="vermine_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="vermine" id="vermine_oui" value="Oui">
+                                    <label for="vermine_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="vermine" id="vermine_nv" value="Non-validé">
+                                    <label for="vermine_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Présence de liquide biologique (urine, selles, sang, vomissures)</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="liquide_bio" id="liquide_bio_non" value="Non">
+                                    <label for="liquide_bio_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="liquide_bio" id="liquide_bio_oui" value="Oui">
+                                    <label for="liquide_bio_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="liquide_bio" id="liquide_bio_nv" value="Non-validé">
+                                    <label for="liquide_bio_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Présence de moisissures</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="moisissures" id="moisissures_non" value="Non">
+                                    <label for="moisissures_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="moisissures" id="moisissures_oui" value="Oui">
+                                    <label for="moisissures_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="moisissures" id="moisissures_nv" value="Non-validé">
+                                    <label for="moisissures_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Présence d'odeur et/ou déchets organiques</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="odeur_dechets" id="odeur_dechets_non" value="Non">
+                                    <label for="odeur_dechets_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="odeur_dechets" id="odeur_dechets_oui" value="Oui">
+                                    <label for="odeur_dechets_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="odeur_dechets" id="odeur_dechets_nv" value="Non-validé">
+                                    <label for="odeur_dechets_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Présence de fumée, de cigarette, cigare, pipe ou autre</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="fumee" id="fumee_non" value="Non">
+                                    <label for="fumee_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="fumee" id="fumee_oui" value="Oui">
+                                    <label for="fumee_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="fumee" id="fumee_nv" value="Non-validé">
+                                    <label for="fumee_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Objet avec brûlure/brûlé (chaudron, canapé, tapis, vêtements)</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="objets_brules" id="objets_brules_non" value="Non">
+                                    <label for="objets_brules_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="objets_brules" id="objets_brules_oui" value="Oui">
+                                    <label for="objets_brules_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="objets_brules" id="objets_brules_nv" value="Non-validé">
+                                    <label for="objets_brules_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Fumeur / utilisateur O2 / fumeur dans le milieu</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="fumeur_o2" id="fumeur_o2_non" value="Non">
+                                    <label for="fumeur_o2_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="fumeur_o2" id="fumeur_o2_oui" value="Oui">
+                                    <label for="fumeur_o2_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="fumeur_o2" id="fumeur_o2_nv" value="Non-validé">
+                                    <label for="fumeur_o2_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Électricité conforme (fils ne traînent pas, prises de courant fonctionnelles)</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="electricite" id="electricite_oui" value="Oui">
+                                    <label for="electricite_oui" class="option-oui">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="electricite" id="electricite_non" value="Non">
+                                    <label for="electricite_non" class="option-non">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="electricite" id="electricite_nv" value="Non-validé">
+                                    <label for="electricite_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Obstacles architecturaux</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="obstacles" id="obstacles_non" value="Non">
+                                    <label for="obstacles_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="obstacles" id="obstacles_oui" value="Oui">
+                                    <label for="obstacles_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="obstacles" id="obstacles_nv" value="Non-validé">
+                                    <label for="obstacles_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Produits chimiques fermés et entreposés de façon sécuritaire</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="produits_chimiques" id="produits_chimiques_oui" value="Oui">
+                                    <label for="produits_chimiques_oui" class="option-oui">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="produits_chimiques" id="produits_chimiques_non" value="Non">
+                                    <label for="produits_chimiques_non" class="option-non">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="produits_chimiques" id="produits_chimiques_nv" value="Non-validé">
+                                    <label for="produits_chimiques_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Ligne téléphonique disponible ou fonctionnel ou ondes cellulaires fortes</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="telephone" id="telephone_oui" value="Oui">
+                                    <label for="telephone_oui" class="option-oui">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="telephone" id="telephone_non" value="Non">
+                                    <label for="telephone_non" class="option-non">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="telephone" id="telephone_nv" value="Non-validé">
+                                    <label for="telephone_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Présence de détecteurs de fumée ou détecteur fonctionnel</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="detecteur_fumee" id="detecteur_fumee_oui" value="Oui">
+                                    <label for="detecteur_fumee_oui" class="option-oui">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="detecteur_fumee" id="detecteur_fumee_non" value="Non">
+                                    <label for="detecteur_fumee_non" class="option-non">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="detecteur_fumee" id="detecteur_fumee_nv" value="Non-validé">
+                                    <label for="detecteur_fumee_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Présence d'armes à feu sécurisées (rangées sous clé)</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="armes" id="armes_oui" value="Oui">
+                                    <label for="armes_oui" class="option-oui">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="armes" id="armes_non" value="Non">
+                                    <label for="armes_non" class="option-non">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="armes" id="armes_nv" value="Non-validé">
+                                    <label for="armes_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Sortie de secours disponible/accessible</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="sortie_secours" id="sortie_secours_oui" value="Oui">
+                                    <label for="sortie_secours_oui" class="option-oui">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="sortie_secours" id="sortie_secours_non" value="Non">
+                                    <label for="sortie_secours_non" class="option-non">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="sortie_secours" id="sortie_secours_nv" value="Non-validé">
+                                    <label for="sortie_secours_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Présence d'objets piquants/tranchants, aiguilles, seringues</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="objets_piquants" id="objets_piquants_non" value="Non">
+                                    <label for="objets_piquants_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="objets_piquants" id="objets_piquants_oui" value="Oui">
+                                    <label for="objets_piquants_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="objets_piquants" id="objets_piquants_nv" value="Non-validé">
+                                    <label for="objets_piquants_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Commentaires</label>
+                            <textarea name="commentaires_int" placeholder="Ajouter des commentaires si nécessaire..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CIVILITÉ -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="icon">🤝</span>
+                        <span>CIVILITÉ</span>
+                    </div>
+                    <div class="section-body">
+                        <div class="form-group">
+                            <label class="form-label">Comportement du client et/ou proche respectueux et appropriés (ton de voix, gestes et propos, agressivité)</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="comportement" id="comportement_oui" value="Oui">
+                                    <label for="comportement_oui" class="option-oui">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="comportement" id="comportement_non" value="Non">
+                                    <label for="comportement_non" class="option-non">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="comportement" id="comportement_nv" value="Non-validé">
+                                    <label for="comportement_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Commentaires</label>
+                            <textarea name="commentaires_civilite" placeholder="Ajouter des commentaires si nécessaire..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ANIMAUX -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="icon">🐕</span>
+                        <span>ANIMAUX</span>
+                    </div>
+                    <div class="section-body">
+                        <div class="form-group">
+                            <label class="form-label label-risque">Présence d'animaux</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="animaux" id="animaux_non" value="Non">
+                                    <label for="animaux_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="animaux" id="animaux_oui" value="Oui">
+                                    <label for="animaux_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="animaux" id="animaux_nv" value="Non-validé">
+                                    <label for="animaux_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Commentaires</label>
+                            <textarea name="commentaires_animaux" placeholder="Ajouter des commentaires si nécessaire..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HABITUDES DE VIE -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="icon">🏥</span>
+                        <span>HABITUDES DE VIE</span>
+                    </div>
+                    <div class="section-body">
+                        <div class="form-group">
+                            <label class="form-label label-risque">Présence de nourriture (avariée, périmée)</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="nourriture_avariee" id="nourriture_avariee_non" value="Non">
+                                    <label for="nourriture_avariee_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="nourriture_avariee" id="nourriture_avariee_oui" value="Oui">
+                                    <label for="nourriture_avariee_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="nourriture_avariee" id="nourriture_avariee_nv" value="Non-validé">
+                                    <label for="nourriture_avariee_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Absence de nourriture ou en petite quantité</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="absence_nourriture" id="absence_nourriture_non" value="Non">
+                                    <label for="absence_nourriture_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="absence_nourriture" id="absence_nourriture_oui" value="Oui">
+                                    <label for="absence_nourriture_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="absence_nourriture" id="absence_nourriture_nv" value="Non-validé">
+                                    <label for="absence_nourriture_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Consommation / tabac / alcool / drogue</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="consommation" id="consommation_non" value="Non">
+                                    <label for="consommation_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="consommation" id="consommation_oui" value="Oui">
+                                    <label for="consommation_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="consommation" id="consommation_nv" value="Non-validé">
+                                    <label for="consommation_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Historique de chute</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="historique_chute" id="historique_chute_non" value="Non">
+                                    <label for="historique_chute_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="historique_chute" id="historique_chute_oui" value="Oui">
+                                    <label for="historique_chute_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="historique_chute" id="historique_chute_nv" value="Non-validé">
+                                    <label for="historique_chute_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Besoin d'aide au transfert</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="aide_transfert" id="aide_transfert_non" value="Non">
+                                    <label for="aide_transfert_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="aide_transfert" id="aide_transfert_oui" value="Oui">
+                                    <label for="aide_transfert_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="aide_transfert" id="aide_transfert_nv" value="Non-validé">
+                                    <label for="aide_transfert_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Risque de fugue</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="risque_fugue" id="risque_fugue_non" value="Non">
+                                    <label for="risque_fugue_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="risque_fugue" id="risque_fugue_oui" value="Oui">
+                                    <label for="risque_fugue_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="risque_fugue" id="risque_fugue_nv" value="Non-validé">
+                                    <label for="risque_fugue_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">En mesure de demander de l'aide</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="demander_aide" id="demander_aide_oui" value="Oui">
+                                    <label for="demander_aide_oui" class="option-oui">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="demander_aide" id="demander_aide_non" value="Non">
+                                    <label for="demander_aide_non" class="option-non">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="demander_aide" id="demander_aide_nv" value="Non-validé">
+                                    <label for="demander_aide_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Hospitalisation récente</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="hospitalisation" id="hospitalisation_non" value="Non">
+                                    <label for="hospitalisation_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="hospitalisation" id="hospitalisation_oui" value="Oui">
+                                    <label for="hospitalisation_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="hospitalisation" id="hospitalisation_nv" value="Non-validé">
+                                    <label for="hospitalisation_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Consultation récente</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="consultation" id="consultation_non" value="Non">
+                                    <label for="consultation_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="consultation" id="consultation_oui" value="Oui">
+                                    <label for="consultation_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="consultation" id="consultation_nv" value="Non-validé">
+                                    <label for="consultation_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Commentaires</label>
+                            <textarea name="commentaires_habitudes" placeholder="Ajouter des commentaires si nécessaire..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MÉDICATION -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="icon">💊</span>
+                        <span>MÉDICATION</span>
+                    </div>
+                    <div class="section-body">
+                        <div class="form-group">
+                            <label class="form-label label-risque">Polypharmacie</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="polypharmacie" id="polypharmacie_non" value="Non">
+                                    <label for="polypharmacie_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="polypharmacie" id="polypharmacie_oui" value="Oui">
+                                    <label for="polypharmacie_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="polypharmacie" id="polypharmacie_nv" value="Non-validé">
+                                    <label for="polypharmacie_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label label-risque">Médicaments périmés</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="med_perimes" id="med_perimes_non" value="Non">
+                                    <label for="med_perimes_non" class="option-oui">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="med_perimes" id="med_perimes_oui" value="Oui">
+                                    <label for="med_perimes_oui" class="option-non">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="med_perimes" id="med_perimes_nv" value="Non-validé">
+                                    <label for="med_perimes_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Prise ou compliance pour la prise</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="compliance" id="compliance_oui" value="Oui">
+                                    <label for="compliance_oui" class="option-oui">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="compliance" id="compliance_non" value="Non">
+                                    <label for="compliance_non" class="option-non">Non</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="compliance" id="compliance_nv" value="Non-validé">
+                                    <label for="compliance_nv" class="option-non-valide">Non-validé</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Commentaires</label>
+                            <textarea name="commentaires_medication" placeholder="Ajouter des commentaires si nécessaire..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AUTRES PROBLÈMES DE SÉCURITÉ -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="icon">⚠️</span>
+                        <span>AUTRES PROBLÈMES DE SÉCURITÉ</span>
+                    </div>
+                    <div class="section-body">
+                        <div class="form-group">
+                            <label class="form-label">Commentaires</label>
+                            <textarea name="commentaires_autres" placeholder="Décrire les autres problèmes de sécurité identifiés..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RECOMMANDATIONS -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="icon">📝</span>
+                        <span>RECOMMANDATIONS</span>
+                    </div>
+                    <div class="section-body">
+                        <div class="form-group">
+                            <label class="form-label">Recommandations</label>
+                            <textarea name="recommandations" placeholder="Inscrire les recommandations..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Est-ce que l'usager est en mesure de reconnaître les conséquences prévisibles des risques identifiés?</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="consequences" id="consequences_oui" value="Oui">
+                                    <label for="consequences_oui" class="option-oui">Oui</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="consequences" id="consequences_non" value="Non">
+                                    <label for="consequences_non" class="option-non">Non</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Retour effectué</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-option">
+                                    <input type="checkbox" name="retour_usager" id="retour_usager">
+                                    <label for="retour_usager">Retour fait à l'usager</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" name="retour_repondant" id="retour_repondant">
+                                    <label for="retour_repondant">Retour fait au répondant</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Date de la note d'évolution décrivant les actions prises en regard des risques identifiés</label>
+                            <input type="date" name="date_note" id="date_note">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="generate-footer">
+                <button class="btn btn-primary" onclick="genererTexte()">
+                    <span class="icon">📄</span> Générer pour RSIPA
+                </button>
+                <button class="btn btn-secondary" onclick="reinitialiser()">
+                    <span class="icon">🔄</span> Réinitialiser
+                </button>
+            </div>
+        </div>
+
+        <footer style="text-align: center; padding: 20px 30px; background: #f8f9fa; border-top: 1px solid #e9ecef; color: #6b7280; font-size: 13px;">
+            Outil numérique créé à partir de la grille papier existante, par Raphaël Chérétakis, infirmier clinicien ASI.
+        </footer>
+    </div>
+
+    <!-- Modal pour le texte généré -->
+    <div id="outputModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Texte formaté pour note d'évolution</h2>
+                <span class="close" onclick="fermerModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <textarea id="outputText" readonly></textarea>
+                <button class="btn btn-primary" style="margin-top: 15px; width: 100%;" onclick="copierTexte()">
+                    <span class="icon">📋</span> Copier le texte
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function remplirAucunRisque() {
+            const form = document.getElementById('risquesForm');
+            
+            // Questions où "Oui" est la meilleure réponse (pas de risque)
+            const questionsPositives = [
+                'num_civique', 'accessible', 'eclairee', 'sonnette', 'main_courante', 
+                'marches_stables', 'equipements_sanitaires', 'electricite', 
+                'produits_chimiques', 'telephone', 'detecteur_fumee', 'armes', 
+                'sortie_secours', 'comportement', 'demander_aide', 'compliance'
+            ];
+            
+            // Questions où "Non" est la meilleure réponse (pas de risque)
+            const questionsNegatives = [
+                'encombree', 'enneigee', 'surface_encombree', 'anomalies_visibles',
+                'encombrement_int', 'plancher_anomalies', 'vermine', 'liquide_bio',
+                'moisissures', 'odeur_dechets', 'fumee', 'objets_brules', 'fumeur_o2',
+                'obstacles', 'objets_piquants', 'animaux', 'nourriture_avariee',
+                'absence_nourriture', 'consommation', 'historique_chute', 'aide_transfert',
+                'risque_fugue', 'hospitalisation', 'consultation', 'polypharmacie', 
+                'med_perimes'
+            ];
+            
+            // Remplir tous les radios selon leur type
+            const allRadios = form.querySelectorAll('input[type="radio"]');
+            allRadios.forEach(radio => {
+                const radioName = radio.name;
+                
+                if (questionsPositives.includes(radioName) && radio.value === 'Oui') {
+                    radio.checked = true;
+                } else if (questionsNegatives.includes(radioName) && radio.value === 'Non') {
+                    radio.checked = true;
+                } else if (radioName === 'consequences' && radio.value === 'Oui') {
+                    // Question spéciale: usager reconnaît les conséquences
+                    radio.checked = true;
+                }
+            });
+            
+            // Décocher les checkboxes
+            const allCheckboxes = form.querySelectorAll('input[type="checkbox"]');
+            allCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Vider les textareas
+            const allTextareas = form.querySelectorAll('textarea');
+            allTextareas.forEach(textarea => {
+                textarea.value = '';
+            });
+            
+            // Afficher le message de succès
+            const successMessage = document.getElementById('successMessage');
+            successMessage.classList.add('show');
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 3000);
+        }
+
+        function reinitialiser() {
+            if (confirm('Êtes-vous sûr de vouloir réinitialiser le formulaire?')) {
+                document.getElementById('risquesForm').reset();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function genererTexte() {
+            const form = document.getElementById('risquesForm');
+            let texte = 'GRILLE D\'IDENTIFICATION DES RISQUES RELIÉS AU SAD\n';
+            texte += '='.repeat(60) + '\n\n';
+            
+            // Fonction helper pour obtenir la valeur d'un radio
+            function getRadioValue(name) {
+                const radio = form.querySelector(`input[name="${name}"]:checked`);
+                return radio ? radio.value : 'Non-validé';
+            }
+            
+            // Fonction helper pour obtenir la valeur d'un textarea
+            function getTextareaValue(name) {
+                const textarea = form.querySelector(`textarea[name="${name}"]`);
+                return textarea && textarea.value.trim() ? textarea.value.trim() : '';
+            }
+            
+            // ENVIRONNEMENT EXTÉRIEUR
+            texte += 'ENVIRONNEMENT EXTÉRIEUR\n';
+            texte += '-'.repeat(60) + '\n';
+            texte += `Numéro civique du domicile visible de la rue : ${getRadioValue('num_civique')}\n`;
+            texte += '\nEntrée et trottoir :\n';
+            texte += `  - Accessible : ${getRadioValue('accessible')}\n`;
+            texte += `  - Encombrée : ${getRadioValue('encombree')}\n`;
+            texte += `  - Éclairée : ${getRadioValue('eclairee')}\n`;
+            texte += `  - Enneigée / glacée : ${getRadioValue('enneigee')}\n`;
+            texte += '\nEscalier et galerie :\n';
+            texte += `  - Main courante présente ou stable : ${getRadioValue('main_courante')}\n`;
+            texte += `  - Surface encombrée (objet, neige) : ${getRadioValue('surface_encombree')}\n`;
+            texte += `  - Marche(s) stable(s) et égale(s) : ${getRadioValue('marches_stables')}\n`;
+            texte += '\nStructure/surface du bâtiment :\n';
+            texte += `  - Anomalies visibles : ${getRadioValue('anomalies_visibles')}\n`;
+            texte += `\nSonnette en fonction : ${getRadioValue('sonnette')}\n`;
+            const commExt = getTextareaValue('commentaires_ext');
+            if (commExt) texte += `\nCommentaires : ${commExt}\n`;
+            texte += '\n';
+            
+            // ENVIRONNEMENT INTÉRIEUR
+            texte += 'ENVIRONNEMENT INTÉRIEUR\n';
+            texte += '-'.repeat(60) + '\n';
+            texte += `Encombrement dans les aires de circulation : ${getRadioValue('encombrement_int')}\n`;
+            texte += `Équipements sanitaires disponibles/fonctionnels : ${getRadioValue('equipements_sanitaires')}\n`;
+            texte += `Surface de plancher avec anomalies : ${getRadioValue('plancher_anomalies')}\n`;
+            texte += `Présence de vermine/excréments : ${getRadioValue('vermine')}\n`;
+            texte += `Présence de liquide biologique : ${getRadioValue('liquide_bio')}\n`;
+            texte += `Présence de moisissures : ${getRadioValue('moisissures')}\n`;
+            texte += `Présence d'odeur et/ou déchets organiques : ${getRadioValue('odeur_dechets')}\n`;
+            texte += `Présence de fumée : ${getRadioValue('fumee')}\n`;
+            texte += `Objet avec brûlure/brûlé : ${getRadioValue('objets_brules')}\n`;
+            texte += `Fumeur/utilisateur O2 : ${getRadioValue('fumeur_o2')}\n`;
+            texte += `Électricité conforme : ${getRadioValue('electricite')}\n`;
+            texte += `Obstacles architecturaux : ${getRadioValue('obstacles')}\n`;
+            texte += `Produits chimiques sécurisés : ${getRadioValue('produits_chimiques')}\n`;
+            texte += `Ligne téléphonique disponible : ${getRadioValue('telephone')}\n`;
+            texte += `Détecteurs de fumée fonctionnels : ${getRadioValue('detecteur_fumee')}\n`;
+            texte += `Armes à feu sécurisées : ${getRadioValue('armes')}\n`;
+            texte += `Sortie de secours accessible : ${getRadioValue('sortie_secours')}\n`;
+            texte += `Objets piquants/tranchants présents : ${getRadioValue('objets_piquants')}\n`;
+            const commInt = getTextareaValue('commentaires_int');
+            if (commInt) texte += `Commentaires : ${commInt}\n`;
+            texte += '\n';
+            
+            // CIVILITÉ
+            texte += 'CIVILITÉ\n';
+            texte += '-'.repeat(60) + '\n';
+            texte += `Comportement respectueux et approprié : ${getRadioValue('comportement')}\n`;
+            const commCiv = getTextareaValue('commentaires_civilite');
+            if (commCiv) texte += `Commentaires : ${commCiv}\n`;
+            texte += '\n';
+            
+            // ANIMAUX
+            texte += 'ANIMAUX\n';
+            texte += '-'.repeat(60) + '\n';
+            texte += `Présence d'animaux : ${getRadioValue('animaux')}\n`;
+            const commAnim = getTextareaValue('commentaires_animaux');
+            if (commAnim) texte += `Commentaires : ${commAnim}\n`;
+            texte += '\n';
+            
+            // HABITUDES DE VIE
+            texte += 'HABITUDES DE VIE\n';
+            texte += '-'.repeat(60) + '\n';
+            texte += `Présence de nourriture avariée : ${getRadioValue('nourriture_avariee')}\n`;
+            texte += `Absence de nourriture : ${getRadioValue('absence_nourriture')}\n`;
+            texte += `Consommation (tabac/alcool/drogue) : ${getRadioValue('consommation')}\n`;
+            texte += `Historique de chute : ${getRadioValue('historique_chute')}\n`;
+            texte += `Besoin d'aide au transfert : ${getRadioValue('aide_transfert')}\n`;
+            texte += `Risque de fugue : ${getRadioValue('risque_fugue')}\n`;
+            texte += `En mesure de demander de l'aide : ${getRadioValue('demander_aide')}\n`;
+            texte += `Hospitalisation récente : ${getRadioValue('hospitalisation')}\n`;
+            texte += `Consultation récente : ${getRadioValue('consultation')}\n`;
+            const commHab = getTextareaValue('commentaires_habitudes');
+            if (commHab) texte += `Commentaires : ${commHab}\n`;
+            texte += '\n';
+            
+            // MÉDICATION
+            texte += 'MÉDICATION\n';
+            texte += '-'.repeat(60) + '\n';
+            texte += `Polypharmacie : ${getRadioValue('polypharmacie')}\n`;
+            texte += `Médicaments périmés : ${getRadioValue('med_perimes')}\n`;
+            texte += `Compliance pour la prise : ${getRadioValue('compliance')}\n`;
+            const commMed = getTextareaValue('commentaires_medication');
+            if (commMed) texte += `Commentaires : ${commMed}\n`;
+            texte += '\n';
+            
+            // AUTRES PROBLÈMES
+            const commAutres = getTextareaValue('commentaires_autres');
+            if (commAutres) {
+                texte += 'AUTRES PROBLÈMES DE SÉCURITÉ\n';
+                texte += '-'.repeat(60) + '\n';
+                texte += `${commAutres}\n\n`;
+            }
+            
+            // RECOMMANDATIONS
+            texte += 'RECOMMANDATIONS\n';
+            texte += '-'.repeat(60) + '\n';
+            const recomm = getTextareaValue('recommandations');
+            if (recomm) texte += `${recomm}\n\n`;
+            
+            texte += `Usager en mesure de reconnaître les conséquences : ${getRadioValue('consequences')}\n`;
+            
+            const retourUsager = form.querySelector('#retour_usager').checked;
+            const retourRepondant = form.querySelector('#retour_repondant').checked;
+            if (retourUsager) texte += 'Retour fait à l\'usager\n';
+            if (retourRepondant) texte += 'Retour fait au répondant\n';
+            
+            const dateNote = form.querySelector('#date_note').value;
+            if (dateNote) {
+                const dateObj = new Date(dateNote);
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                const dateFormatee = dateObj.toLocaleDateString('fr-CA', options);
+                texte += `Date de la note d'évolution : ${dateFormatee}\n`;
+            }
+            
+            // Afficher dans le modal
+            document.getElementById('outputText').value = texte;
+            document.getElementById('outputModal').style.display = 'block';
+        }
+
+        function fermerModal() {
+            document.getElementById('outputModal').style.display = 'none';
+        }
+
+        function copierTexte() {
+            const textarea = document.getElementById('outputText');
+            textarea.select();
+            document.execCommand('copy');
+            
+            const btn = event.target.closest('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="icon">✓</span> Copié!';
+            btn.style.background = '#10b981';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = '';
+            }, 2000);
+        }
+
+        // Fermer le modal en cliquant à l'extérieur
+        window.onclick = function(event) {
+            const modal = document.getElementById('outputModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Fermer avec la touche Échap
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                fermerModal();
+            }
+        });
+
+        // Navigation au clavier
+        document.addEventListener('keydown', function(event) {
+            const activeElement = document.activeElement;
+            
+            // Vérifier si on est sur un input radio
+            if (activeElement && activeElement.type === 'radio') {
+                const currentGroup = activeElement.name;
+                const allRadiosInGroup = document.querySelectorAll(`input[name="${currentGroup}"]`);
+                const allRadios = Array.from(document.querySelectorAll('input[type="radio"]'));
+                const currentIndex = Array.from(allRadiosInGroup).indexOf(activeElement);
+                
+                // Navigation avec flèches gauche/droite dans le même groupe
+                if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+                    event.preventDefault();
+                    const nextIndex = (currentIndex + 1) % allRadiosInGroup.length;
+                    allRadiosInGroup[nextIndex].focus();
+                } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    const prevIndex = (currentIndex - 1 + allRadiosInGroup.length) % allRadiosInGroup.length;
+                    allRadiosInGroup[prevIndex].focus();
+                } 
+                // Sélection avec barre d'espace
+                else if (event.key === ' ' || event.key === 'Spacebar') {
+                    event.preventDefault();
+                    activeElement.checked = true;
+                    
+                    // Trouver le prochain groupe de radio buttons
+                    const currentGroupIndex = allRadios.findIndex(r => r === activeElement);
+                    let nextRadio = null;
+                    
+                    // Chercher le prochain radio qui n'est pas dans le même groupe
+                    for (let i = currentGroupIndex + 1; i < allRadios.length; i++) {
+                        if (allRadios[i].name !== currentGroup) {
+                            nextRadio = allRadios[i];
+                            break;
+                        }
+                    }
+                    
+                    // Si trouvé, passer au focus
+                    if (nextRadio) {
+                        nextRadio.focus();
+                        // Scroll pour garder l'élément visible
+                        nextRadio.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+                // Touche Tab - laisser le comportement par défaut mais scroll
+                else if (event.key === 'Tab' && !event.shiftKey) {
+                    setTimeout(() => {
+                        if (document.activeElement && document.activeElement.type === 'radio') {
+                            document.activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }, 0);
+                }
+            }
+        });
+
+        // Permettre de commencer la navigation au clavier avec Tab
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstRadio = document.querySelector('input[type="radio"]');
+            if (firstRadio) {
+                // Optionnel: mettre le focus sur le premier radio au chargement
+                // firstRadio.focus();
+            }
+        });
+    </script>
+</body>
+</html>
